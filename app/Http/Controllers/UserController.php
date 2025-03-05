@@ -21,13 +21,20 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:6'
+        ]);
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'active' => $request->active,
+            'active' => true
         ]);
-        return response()->json($user);
+
+        return response()->json($user, 201);
     }
 
     /**
@@ -45,6 +52,18 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
         $user->update($request->all());
+        return response()->json($user);
+    }
+
+    /**
+     * Toggle user active status.
+     */
+
+    public function toggleActive($id)
+    {
+        $user = User::findOrFail($id);
+        $user->active = !$user->active;
+        $user->save();
         return response()->json($user);
     }
 
