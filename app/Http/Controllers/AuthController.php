@@ -11,24 +11,24 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+        $credentials = $request->only('email', 'password');
+        $user = User::where('email', $credentials['email'])->first();
 
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user || !Hash::check($request->password, $user->password) || !$user->active) {
-            return response()->json(['message' => 'Credenciales incorrectas o usuario inactivo'], 401);
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+            return response()->json(['message' => 'Credenciales inválidas'], 401);
         }
 
-        // Crear un token usando Sanctum
-        $token = $user->createToken('auth_token')->plainTextToken;
+        if (!$user->active) {
+            return response()->json(['message' => 'Tu cuenta está desactivada. Contacta al administrador.'], 403);
+        }
 
-        return response()->json([
-            'message' => 'Inicio de sesión exitoso',
-            'access_token' => $token,
-            'token_type' => 'Bearer'
-        ]);
+        $token = $user->createToken('auth_token')->plainTextToken;
+        return response()->json(['token' => $token, 'user' => $user]);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->tokens()->delete();
+        return response()->json(['message' => 'Sesión cerrada']);
     }
 }

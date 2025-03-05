@@ -1,32 +1,26 @@
 import api from './api';
+import { useAuthStore } from '../stores/authStore';
 
 export const login = async (email, password) => {
     const response = await api.post('/login', { email, password });
-
-    const token = response.data.token || response.data.access_token; // Asegurarse del nombre correcto
-
-    console.log("Respuesta del servidor:", response.data);
-    
-
+    const token = response.data.token || response.data.access_token;
     if (token) {
-        console.log("Token recibido:", token);
-
-        // Guardar el token en LocalStorage
         localStorage.setItem('token', token);
-
-        // Configurar Axios para usar el token
         api.defaults.headers.Authorization = `Bearer ${token}`;
-    } else {
-        console.error("No se recibió un token en la respuesta.");
-    }
 
+        // Actualizar estado global de autenticación
+        const authStore = useAuthStore();
+        authStore.setAuthenticated(true);
+    }
     return response.data;
 };
 
 export const logout = async () => {
     await api.post('/logout');
-
-    // Eliminar el token
     localStorage.removeItem('token');
     delete api.defaults.headers.Authorization;
+
+    // Actualizar estado global de autenticación
+    const authStore = useAuthStore();
+    authStore.setAuthenticated(false);
 };

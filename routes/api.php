@@ -15,7 +15,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/users/{id}/toggle-active', [UserController::class, 'toggleActive']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
 
-    Route::get('/me', function (\Illuminate\Http\Request $request) {
-        return response()->json($request->user());
-    });
+    Route::post('/logout', [AuthController::class, 'logout']);
 });

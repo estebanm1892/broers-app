@@ -12,6 +12,11 @@
             </div>
             <button type="submit" class="btn btn-primary">Ingresar</button>
         </form>
+
+        <!-- Modal de error -->
+        <div v-if="errorMessage" class="alert alert-danger mt-3">
+            {{ errorMessage }}
+        </div>
     </div>
 </template>
 
@@ -22,17 +27,21 @@ export default {
     data() {
         return {
             email: '',
-            password: ''
+            password: '',
+            errorMessage: '' // Variable para mostrar mensajes de error
         };
     },
     methods: {
         async handleLogin() {
             try {
                 const response = await login(this.email, this.password);
-                alert(response.message);
                 this.$router.push('/users');
             } catch (error) {
-                alert('Error en login');
+                if (error.response && error.response.status === 403) {
+                    this.errorMessage = 'Tu cuenta está desactivada. Contacta al administrador.';
+                } else {
+                    this.errorMessage = 'Error en login. Verifica tus credenciales.';
+                }
             }
         }
     }

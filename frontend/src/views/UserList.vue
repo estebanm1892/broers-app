@@ -16,8 +16,8 @@
                     <td>{{ user.email }}</td>
                     <td>{{ user.active ? 'Sí' : 'No' }}</td>
                     <td>
-                        <button @click="toggleActive(user.id)" class="btn btn-warning">Activar/Desactivar</button>
-                        <button @click="deleteUser(user.id)" class="btn btn-danger">Eliminar</button>
+                        <button @click="toggleActive(user)" class="btn btn-warning">Activar/Desactivar</button>
+                        <!-- <button @click="deleteUser(user.id)" class="btn btn-danger">Eliminar</button> -->
                     </td>
                 </tr>
             </tbody>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { getUsers, updateUser, deleteUser } from '../services/users';
+import api from '../services/api';
 
 export default {
     data() {
@@ -35,17 +35,29 @@ export default {
         };
     },
     async created() {
-        this.users = await getUsers();
+        this.users = await this.fetchUsers();
     },
     methods: {
+        async fetchUsers() {
+            const response = await api.get('/users');
+            return response.data;
+        },
         async toggleActive(user) {
-            user.active = !user.active;
-            await updateUser(user.id, user);
-            this.users = await getUsers();
+            try {
+                const response = await api.patch(`/users/${user.id}/toggle-active`);
+
+                // Reemplazar el usuario actualizado en la lista
+                const index = this.users.findIndex(u => u.id === user.id);
+                if (index !== -1) {
+                    this.users[index] = response.data;
+                }
+            } catch (error) {
+                console.error('Error al cambiar estado:', error);
+            }
         },
         async deleteUser(id) {
-            await deleteUser(id);
-            this.users = await getUsers();
+            await api.delete(`/users/${id}`);
+            this.users = await this.fetchUsers();
         }
     }
 };
