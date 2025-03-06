@@ -1,4 +1,4 @@
-# Laravel & Vue.js CRUD - Prueba Técnica
+# Laravel & Vue.js CRUD - Prueba Técnica BROERS
 
 ## 📌 Descripción
 Este proyecto es una prueba técnica Full Stack para **BROERS** que implementa un sistema de gestión de usuarios con un CRUD completo utilizando **Laravel 12 (Backend)** y **Vue.js 3 (Frontend)**.
