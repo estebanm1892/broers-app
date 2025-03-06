@@ -5,16 +5,19 @@ export const getUsers = async () => {
     return response.data;
 };
 
-export const createUser = async (user) => {
-    const response = await api.post('/users', user);
+export const getUserById = async (id) => {
+    const response = await api.get(`/users/${id}`);
     return response.data;
+};
+
+export const createUser = async (user) => {
+    return await api.post('/users', user); // Se mantiene la ruta POST /users
 };
 
 export const updateUser = async (id, user) => {
-    const response = await api.put(`/users/${id}`, user);
-    return response.data;
+    return await api.put(`/users/${id}`, user); // Se mantiene la ruta PUT /users/{id}
 };
 
 export const deleteUser = async (id) => {
-    await api.delete(`/users/${id}`);
+    return await api.delete(`/users/${id}`);
 };

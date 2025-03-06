@@ -24,14 +24,15 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6'
+            'password' => 'required|min:6',
+            'active' => 'boolean'
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'active' => true
+            'active' => $request->active ?? false
         ]);
 
         return response()->json($user, 201);
@@ -42,7 +43,8 @@ class UserController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $user = User::findOrFail($id);
+        return response()->json($user);
     }
 
     /**
@@ -51,9 +53,27 @@ class UserController extends Controller
     public function update(Request $request, string $id)
     {
         $user = User::findOrFail($id);
-        $user->update($request->all());
+
+        // Validación de los datos enviados
+        $validatedData = $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users,email,' . $id,
+            // 'password' => 'nullable|min:6', // La contraseña es opcional en la edición
+            'active' => 'boolean'
+        ]);
+
+        // Si la contraseña se envía, se cifra antes de guardar
+        if ($request->filled('password')) {
+            $validatedData['password'] = Hash::make($request->password);
+        } else {
+            unset($validatedData['password']); // No actualizar la contraseña si no se envía
+        }
+
+        $user->update($validatedData);
+
         return response()->json($user);
     }
+
 
     /**
      * Toggle user active status.

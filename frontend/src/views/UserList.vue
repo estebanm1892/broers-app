@@ -1,6 +1,7 @@
 <template>
     <div class="container mt-5">
         <h2>Lista de Usuarios</h2>
+        <router-link to="/users/create" class="btn btn-success mb-3">Crear Usuario</router-link>
         <table class="table">
             <thead>
                 <tr>
@@ -17,7 +18,10 @@
                     <td>{{ user.active ? 'Sí' : 'No' }}</td>
                     <td>
                         <button @click="toggleActive(user)" class="btn btn-warning">Activar/Desactivar</button>
-                        <!-- <button @click="deleteUser(user.id)" class="btn btn-danger">Eliminar</button> -->
+                    </td>
+                    <td>
+                        <router-link :to="`/users/edit/${user.id}`" class="btn btn-warning me-2">Editar</router-link>
+                        <button @click="deleteUser(user.id)" class="btn btn-danger">Eliminar</button>
                     </td>
                 </tr>
             </tbody>
