@@ -17,15 +17,14 @@
                     <td>{{ user.email }}</td>
                     <td>{{ user.active ? 'Sí' : 'No' }}</td>
                     <td>
-                        <button @click="toggleActive(user)" class="btn btn-warning">Activar/Desactivar</button>
-                    </td>
-                    <td>
-                        <router-link :to="`/users/edit/${user.id}`" class="btn btn-warning me-2">Editar</router-link>
+                        <button @click="toggleActive(user)" class="btn btn-warning me-2">Activar/Desactivar</button>
+                        <router-link :to="`/users/edit/${user.id}`" class="btn btn-primary me-2">Editar</router-link>
                         <button @click="deleteUser(user.id)" class="btn btn-danger">Eliminar</button>
                     </td>
                 </tr>
             </tbody>
         </table>
+
     </div>
 </template>
 

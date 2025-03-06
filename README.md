@@ -17,8 +17,8 @@ Los usuarios pueden ser creados, editados, activados/desactivados y eliminados d
 ## 🚀 Instalación y Configuración
 ### 1️⃣ Clonar el repositorio
 ```bash
-  git clone https://github.com/tu-usuario/tu-repositorio.git
-  cd tu-repositorio
+  git clone https://github.com/estebanm1892/broers-app
+  cd broers-app
 ```
 
 ### 2️⃣ Configurar el Backend (Laravel)
